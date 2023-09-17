@@ -169,6 +169,43 @@ const useTooltip = () => {
               `,
           }
         );
+      case "TMS":
+        return (
+          op && {
+            html: `
+                <div style="color: #333333; font-weight: bold; font-size: 0.8rem; line-height: 2;">
+                  ${`도로명: (ID: ${op.uid})`}
+                </div>
+                  <div style="color: red; font-size: 0.8rem; line-height: 2;">
+                    ${`· AADT: ${op.aadt_pred}`}
+                  </div>
+                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                    ${`· ${info.roadNo.name}: ${op.road_no}`}
+                  </div>
+                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                    ${`· ${info.laneOps.name}: ${laneF(op.width)}`}
+                  </div>
+                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                  ${`· ${info.facilOps.name}: ${facilF(op.facil_kind)}`}
+                  </div>
+                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                  ${`· ${info.speedOps.name}: ${speedF(op.max_spd)}`}
+                  </div>
+                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                  ${`· ${info.barrierOps.name}: ${barrierF(op.barrier)}`}
+                  </div>
+                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                  ${`· ${info.lightOps.name}: ${lightF(op.num_cross)}`}
+                  </div>
+                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                  ${`· ${info.caronlyOps.name}: ${caronlyF(op.auto_exclu)}`}
+                  </div>
+                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                  ${`· ${info.onewayOps.name}: ${onewayF(op.oneway)}`}
+                  </div>
+                `,
+          }
+        );
       case "TAAS":
         if (op && taasInfo) {
           let fa, si, li, ri, emi;

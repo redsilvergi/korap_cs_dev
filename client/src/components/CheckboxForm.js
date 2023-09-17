@@ -205,6 +205,58 @@ const CheckboxForm = ({ name, checklist }) => {
     ],
   ];
 
+  const tmsItem = [
+    <div className="titm titm_tms">
+      <div className="emi1">
+        <BsDashSquareFill className="icon" />
+        <div>&nbsp;1524 &lt; AADT ≤ 3220</div>
+      </div>
+      <div className="emi2">
+        <BsDashSquareFill className="icon" />
+        <div>&nbsp;3220 &lt; AADT ≤ 10114</div>
+      </div>
+      <div className="emi3">
+        <BsDashSquareFill className="icon" />
+        <div>&nbsp;10114 &lt; AADT ≤ 18271</div>
+      </div>
+    </div>,
+    <div className="titm titm_tms">
+      <div className="emi4">
+        <BsDashSquareFill className="icon" />
+        <div>&nbsp;18271 &lt; AADT ≤ 28562</div>
+      </div>
+      <div className="emi5">
+        <BsDashSquareFill className="icon" />
+        <div>&nbsp;28562 &lt; AADT ≤ 41859</div>
+      </div>
+      <div className="emi6">
+        <BsDashSquareFill className="icon" />
+        <div>&nbsp;41859 &lt; AADT ≤ 59391</div>
+      </div>
+      <div className="emi7">
+        <BsDashSquareFill className="icon" />
+        <div>&nbsp;59391 &lt; AADT ≤ 82417</div>
+      </div>
+    </div>,
+    <div>
+      <div className="titm titm_tms">
+        <div className="emi8">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;82417 &lt; AADT ≤ 119530</div>
+        </div>
+        <div className="emi9">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;119530 &lt; AADT ≤ 188392</div>
+        </div>
+        <div className="emi10">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;188392 &lt; AADT ≤ 298292</div>
+        </div>
+      </div>
+      <div className="emi_des">*AADT TMS(교통량).</div>
+    </div>,
+  ];
+
   return (
     <form>
       {list.map((item, index) => (
@@ -235,6 +287,8 @@ const CheckboxForm = ({ name, checklist }) => {
               : depth2 === "자전거관점"
               ? taasItem[2][index]
               : null
+            : depth1 === "TMS"
+            ? tmsItem[index]
             : null}
         </div>
       ))}

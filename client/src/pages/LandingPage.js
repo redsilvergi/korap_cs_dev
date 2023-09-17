@@ -13,7 +13,7 @@ import useInfo from "../hooks/use-info";
 import useEmiColor from "../hooks/use_emicolor";
 
 const MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1IjoicmVkc2lsdmVyNTIyIiwiYSI6ImNsaHlkcDc4MzB4MGgzZHJwZjdqamFwODYifQ.m22renmKPUA4rupVepEgAg";
+  "pk.eyJ1IjoicmVkc2lsdmVyNTIyIiwiYSI6ImNsaHl4enpjNzE4N3Eza3Bjemk3MTc1cDYifQ.EL1F3mAAhdlX1du8lCLDGw";
 
 const INITIAL_VIEW_STATE = {
   longitude: 126.8,
@@ -30,9 +30,14 @@ function LandingPage() {
   const [data, setData] = useState({ nroad: null, emiroad: null });
   const [length, setLength] = useState(null);
   const { getTooltip } = useTooltip();
-  const { info, taasInfo, depth1, depth2 } = useInfo();
-  const { getEmiVColor, getEmiPColor, getEmiBColor, getRoadColor } =
-    useEmiColor();
+  const { info, taasInfo, tmsInfo, depth1, depth2 } = useInfo();
+  const {
+    getEmiVColor,
+    getEmiPColor,
+    getEmiBColor,
+    getRoadColor,
+    getTmsColor,
+  } = useEmiColor();
   const [hoveredItem, setHoveredItem] = useState(null);
   const [basemap, setBasemap] = useState(
     "mapbox://styles/redsilver522/cli2ji9m500w901pofuyqhbtz"
@@ -75,17 +80,36 @@ function LandingPage() {
       lineWidthMinPixels: 4,
       getLineWidth: 2000,
       getLineColor: (d) => {
-        return getRoadColor(d, info);
+        switch (depth1) {
+          case "도로현황":
+            return getRoadColor(d);
+          case "TMS":
+            return getTmsColor(d.properties.aadt_pred);
+          default:
+            return [230, 0, 60];
+        }
       },
       pickable: true,
       autoHighlight: true,
-      visible: isFilter && view.zoom >= 6 && depth1 === "도로현황",
-      // onClick: (i, e) => console.log(i, e),
+      visible:
+        isFilter &&
+        view.zoom >= 6 &&
+        (depth1 === "도로현황" || depth1 === "TMS"),
+      onClick: (i, e) => console.log(i, e),
       updateTriggers: {
-        getLineColor: info,
+        getLineColor: [info, depth1, tmsInfo],
       },
     });
-  }, [data.nroad, depth1, isFilter, view.zoom, info, getRoadColor]);
+  }, [
+    data.nroad,
+    depth1,
+    isFilter,
+    view.zoom,
+    info,
+    getRoadColor,
+    getTmsColor,
+    tmsInfo,
+  ]);
 
   const layer2 = useMemo(() => {
     if (!data.emiroad) return null;
@@ -99,11 +123,11 @@ function LandingPage() {
       getLineColor: (d) => {
         switch (depth2) {
           case "차량관점":
-            return getEmiVColor(d.properties.emi_v, taasInfo);
+            return getEmiVColor(d.properties.emi_v);
           case "보행자관점":
-            return getEmiPColor(d.properties.emi_p, taasInfo);
+            return getEmiPColor(d.properties.emi_p);
           case "자전거관점":
-            return getEmiBColor(d.properties.emi_b, taasInfo);
+            return getEmiBColor(d.properties.emi_b);
           default:
             return [230, 0, 60];
         }
@@ -480,10 +504,60 @@ function LandingPage() {
           : 0;
 
       setLength(totalLength);
+    } else if (data.nroad && tmsInfo && depth1 === "TMS") {
+      const filtered = data.nroad.features.filter((feature) => {
+        let aadt, conditions;
+
+        aadt = feature.properties.aadt_pred;
+        conditions = [
+          tmsInfo[0] && 1524 <= aadt && aadt <= 18271,
+          tmsInfo[1] && 18271 < aadt && aadt <= 82417,
+          tmsInfo[2] && 82417 < aadt && aadt <= 298292,
+        ];
+
+        if (conditions.every((val) => val === false)) {
+          return aadt === -100;
+        } else {
+          return conditions.some((val) => val === true);
+        }
+      });
+
+      const totalLength =
+        filtered.length !== 0
+          ? Math.round(
+              filtered.reduce((acc, feature) => {
+                return acc + feature.properties.length;
+              }, 0) / 1000
+            )
+          : depth1 === "TMS"
+          ? 14927
+          : 0;
+
+      setLength(totalLength);
     } else {
       setLength(0);
     }
-  }, [depth1, depth2, data.emiroad, taasInfo, data.nroad, info]);
+  }, [depth1, depth2, data.emiroad, taasInfo, data.nroad, info, tmsInfo]);
+
+  const handleState = () => {
+    console.log(
+      "\ndepth1:",
+      "\n",
+      depth1,
+      "\ndepth2:",
+      "\n",
+      depth2,
+      "\ninfo:",
+      "\n",
+      info,
+      "\ntaasInfo:",
+      "\n",
+      taasInfo,
+      "\ntmsInfo:",
+      "\n",
+      tmsInfo
+    );
+  };
 
   return (
     <div className="testc">
@@ -528,6 +602,9 @@ function LandingPage() {
             onClick={() => setIsFilter(!isFilter)}
           >
             F
+          </button>
+          <button className="toggle_button" onClick={handleState}>
+            VS
           </button>
         </div>
 

@@ -1,5 +1,8 @@
+import useInfo from "../hooks/use-info";
+
 const useEmiColor = () => {
-  const getEmiVColor = (emi, taasInfo) => {
+  const { info, taasInfo, tmsInfo, depth1 } = useInfo();
+  const getEmiVColor = (emi) => {
     if (taasInfo.every((val) => val === false)) {
       if (0 === emi) {
         return [0, 166, 172, 255 * 0.8];
@@ -51,7 +54,7 @@ const useEmiColor = () => {
     }
   };
 
-  const getEmiPColor = (emi, taasInfo) => {
+  const getEmiPColor = (emi) => {
     if (taasInfo.every((val) => val === false)) {
       if (0 === emi) {
         return [0, 166, 172, 255 * 0.8];
@@ -103,7 +106,7 @@ const useEmiColor = () => {
     }
   };
 
-  const getEmiBColor = (emi, taasInfo) => {
+  const getEmiBColor = (emi) => {
     if (taasInfo.every((val) => val === false)) {
       if (0 === emi) {
         return [0, 166, 172, 255 * 0.8];
@@ -155,164 +158,229 @@ const useEmiColor = () => {
     }
   };
 
-  const getRoadColor = (feature, info) => {
-    const {
-      roadNo,
-      laneOps,
-      facilOps,
-      speedOps,
-      barrierOps,
-      lightOps,
-      caronlyOps,
-      onewayOps,
-    } = info;
-    const filterConditions = [];
-    if (roadNo.selected) {
-      filterConditions.push((feature) =>
-        roadNo.selected.includes(parseInt(feature.properties.road_no))
-      );
-    }
-
-    if (laneOps.checkboxes) {
-      const laneRanges = ["1", "2", "3", "4", "5"];
-      var laneConditions = laneOps.checkboxes
-        .map((laneOp, index) => {
-          if (laneOp) {
-            return (feature) => feature.properties.width === laneRanges[index];
-          } else {
-            return null;
-          }
-        })
-        .filter((condition) => condition !== null);
+  const getTmsColor = (d) => {
+    if (tmsInfo.every((val) => val === false)) {
+      if (1524 <= d && d <= 3220) {
+        return [0, 166, 172, 255 * 0.8];
+      } else if (3220 < d && d <= 10114) {
+        return [43, 150, 175, 255 * 0.8];
+      } else if (10114 < d && d <= 18271) {
+        return [86, 134, 178, 255 * 0.8];
+      } else if (18271 < d && d <= 28562) {
+        return [129, 118, 181, 255 * 0.8];
+      } else if (28562 < d && d <= 41859) {
+        return [164, 126, 161, 255 * 0.8];
+      } else if (41859 < d && d <= 59391) {
+        return [198, 133, 140, 255 * 0.8];
+      } else if (59391 < d && d <= 82417) {
+        return [233, 141, 120, 255 * 0.8];
+      } else if (82417 < d && d <= 119530) {
+        return [218, 94, 84, 255 * 0.8];
+      } else if (119530 < d && d <= 188392) {
+        return [204, 47, 47, 255 * 0.8];
+      } else if (188392 < d && d <= 298292) {
+        return [189, 0, 11, 255 * 0.8];
+      } else {
+        return [255, 0, 0, 255 * 0.8];
+      }
     } else {
-      laneConditions = [];
-    }
-    if (facilOps.checkboxes) {
-      const facilRanges = ["0", "1", "2", "4", "8"];
-      var facilConditions = facilOps.checkboxes
-        .map((facilOp, index) => {
-          if (facilOp) {
-            return (feature) =>
-              feature.properties.facil_kind === facilRanges[index];
-          } else {
-            return null;
-          }
-        })
-        .filter((condition) => condition !== null);
-    } else {
-      facilConditions = [];
-    }
-    if (speedOps.checkboxes) {
-      const speedRanges = [20, 30, 40, 50, 60, 70, 80];
-      var speedConditions = speedOps.checkboxes
-        .map((speedOp, index) => {
-          if (speedOp) {
-            if (index === 8) {
-              return (feature) =>
-                feature.properties.max_spd === null ||
-                feature.properties.max_spd === 0;
-            } else if (index === 7) {
-              return (feature) =>
-                feature.properties.max_spd === 90 ||
-                feature.properties.max_spd === 100 ||
-                feature.properties.max_spd === 110;
-            } else {
-              return (feature) =>
-                feature.properties.max_spd === speedRanges[index];
-            }
-          } else {
-            return null;
-          }
-        })
-        .filter((condition) => condition !== null);
-    } else {
-      speedConditions = [];
-    }
-    if (barrierOps.checkboxes) {
-      const barrierRanges = ["0", "1", "2", "3", "4", "5", "15"];
-      var barrierConditions = barrierOps.checkboxes
-        .map((barrierOp, index) => {
-          if (barrierOp) {
-            return (feature) =>
-              feature.properties.barrier === barrierRanges[index];
-          } else {
-            return null;
-          }
-        })
-        .filter((condition) => condition !== null);
-    } else {
-      barrierConditions = [];
-    }
-    if (lightOps.checkboxes) {
-      const lightRanges = [0, 1, 2, 3, 4, null];
-      var lightConditions = lightOps.checkboxes
-        .map((lightOp, index) => {
-          if (lightOp) {
-            return (feature) =>
-              feature.properties.num_cross === lightRanges[index];
-          } else {
-            return null;
-          }
-        })
-        .filter((condition) => condition !== null);
-    } else {
-      lightConditions = [];
-    }
-    if (caronlyOps.checkboxes) {
-      const caronlyRanges = ["0", "1", null];
-      var caronlyConditions = caronlyOps.checkboxes
-        .map((caronlyOp, index) => {
-          if (caronlyOp) {
-            return (feature) =>
-              feature.properties.auto_exclu === caronlyRanges[index];
-          } else {
-            return null;
-          }
-        })
-        .filter((condition) => condition !== null);
-    } else {
-      caronlyConditions = [];
-    }
-    if (onewayOps.checkboxes) {
-      const onewayRanges = ["0", "1"];
-      var onewayConditions = onewayOps.checkboxes
-        .map((onewayOp, index) => {
-          if (onewayOp) {
-            return (feature) =>
-              feature.properties.oneway === onewayRanges[index];
-          } else {
-            return null;
-          }
-        })
-        .filter((condition) => condition !== null);
-    } else {
-      onewayConditions = [];
-    }
-
-    if (
-      filterConditions.every((condition) => condition(feature)) &&
-      (laneConditions.length === 0 ||
-        laneConditions.some((condition) => condition(feature))) &&
-      (facilConditions.length === 0 ||
-        facilConditions.some((condition) => condition(feature))) &&
-      (speedConditions.length === 0 ||
-        speedConditions.some((condition) => condition(feature))) &&
-      (barrierConditions.length === 0 ||
-        barrierConditions.some((condition) => condition(feature))) &&
-      (lightConditions.length === 0 ||
-        lightConditions.some((condition) => condition(feature))) &&
-      (caronlyConditions.length === 0 ||
-        caronlyConditions.some((condition) => condition(feature))) &&
-      (onewayConditions.length === 0 ||
-        onewayConditions.some((condition) => condition(feature)))
-    ) {
-      return [230, 0, 60, 255 * 0.8];
-    } else {
-      return [0, 0, 0, 255 * 0.05];
+      if (1524 <= d && d <= 3220) {
+        return tmsInfo[0] ? [0, 166, 172, 255 * 0.8] : [0, 0, 0, 255 * 0.05];
+      } else if (3220 < d && d <= 10114) {
+        return tmsInfo[0] ? [43, 150, 175, 255 * 0.8] : [0, 0, 0, 255 * 0.05];
+      } else if (10114 < d && d <= 18271) {
+        return tmsInfo[0] ? [86, 134, 178, 255 * 0.8] : [0, 0, 0, 255 * 0.05];
+      } else if (18271 < d && d <= 28562) {
+        return tmsInfo[1] ? [129, 118, 181, 255 * 0.8] : [0, 0, 0, 255 * 0.05];
+      } else if (28562 < d && d <= 41859) {
+        return tmsInfo[1] ? [164, 126, 161, 255 * 0.8] : [0, 0, 0, 255 * 0.05];
+      } else if (41859 < d && d <= 59391) {
+        return tmsInfo[1] ? [198, 133, 140, 255 * 0.8] : [0, 0, 0, 255 * 0.05];
+      } else if (59391 < d && d <= 82417) {
+        return tmsInfo[1] ? [233, 141, 120, 255 * 0.8] : [0, 0, 0, 255 * 0.05];
+      } else if (82417 < d && d <= 119530) {
+        return tmsInfo[2] ? [218, 94, 84, 255 * 0.8] : [0, 0, 0, 255 * 0.05];
+      } else if (119530 < d && d <= 188392) {
+        return tmsInfo[2] ? [204, 47, 47, 255 * 0.8] : [0, 0, 0, 255 * 0.05];
+      } else if (188392 < d && d <= 298292) {
+        return tmsInfo[2] ? [189, 0, 11, 255 * 0.8] : [0, 0, 0, 255 * 0.05];
+      } else {
+        return [255, 0, 0, 255 * 0.8];
+      }
     }
   };
 
-  return { getEmiVColor, getEmiPColor, getEmiBColor, getRoadColor };
+  const getRoadColor = (feature) => {
+    if (depth1 === "도로현황") {
+      const {
+        roadNo,
+        laneOps,
+        facilOps,
+        speedOps,
+        barrierOps,
+        lightOps,
+        caronlyOps,
+        onewayOps,
+      } = info;
+      const filterConditions = [];
+      if (roadNo.selected) {
+        filterConditions.push((feature) =>
+          roadNo.selected.includes(parseInt(feature.properties.road_no))
+        );
+      }
+      if (laneOps.checkboxes) {
+        const laneRanges = ["1", "2", "3", "4", "5"];
+        var laneConditions = laneOps.checkboxes
+          .map((laneOp, index) => {
+            if (laneOp) {
+              return (feature) =>
+                feature.properties.width === laneRanges[index];
+            } else {
+              return null;
+            }
+          })
+          .filter((condition) => condition !== null);
+      } else {
+        laneConditions = [];
+      }
+      if (facilOps.checkboxes) {
+        const facilRanges = ["0", "1", "2", "4", "8"];
+        var facilConditions = facilOps.checkboxes
+          .map((facilOp, index) => {
+            if (facilOp) {
+              return (feature) =>
+                feature.properties.facil_kind === facilRanges[index];
+            } else {
+              return null;
+            }
+          })
+          .filter((condition) => condition !== null);
+      } else {
+        facilConditions = [];
+      }
+      if (speedOps.checkboxes) {
+        const speedRanges = [20, 30, 40, 50, 60, 70, 80];
+        var speedConditions = speedOps.checkboxes
+          .map((speedOp, index) => {
+            if (speedOp) {
+              if (index === 8) {
+                return (feature) =>
+                  feature.properties.max_spd === null ||
+                  feature.properties.max_spd === 0;
+              } else if (index === 7) {
+                return (feature) =>
+                  feature.properties.max_spd === 90 ||
+                  feature.properties.max_spd === 100 ||
+                  feature.properties.max_spd === 110;
+              } else {
+                return (feature) =>
+                  feature.properties.max_spd === speedRanges[index];
+              }
+            } else {
+              return null;
+            }
+          })
+          .filter((condition) => condition !== null);
+      } else {
+        speedConditions = [];
+      }
+      if (barrierOps.checkboxes) {
+        const barrierRanges = ["0", "1", "2", "3", "4", "5", "15"];
+        var barrierConditions = barrierOps.checkboxes
+          .map((barrierOp, index) => {
+            if (barrierOp) {
+              return (feature) =>
+                feature.properties.barrier === barrierRanges[index];
+            } else {
+              return null;
+            }
+          })
+          .filter((condition) => condition !== null);
+      } else {
+        barrierConditions = [];
+      }
+      if (lightOps.checkboxes) {
+        const lightRanges = [0, 1, 2, 3, 4, null];
+        var lightConditions = lightOps.checkboxes
+          .map((lightOp, index) => {
+            if (lightOp) {
+              return (feature) =>
+                feature.properties.num_cross === lightRanges[index];
+            } else {
+              return null;
+            }
+          })
+          .filter((condition) => condition !== null);
+      } else {
+        lightConditions = [];
+      }
+      if (caronlyOps.checkboxes) {
+        const caronlyRanges = ["0", "1", null];
+        var caronlyConditions = caronlyOps.checkboxes
+          .map((caronlyOp, index) => {
+            if (caronlyOp) {
+              return (feature) =>
+                feature.properties.auto_exclu === caronlyRanges[index];
+            } else {
+              return null;
+            }
+          })
+          .filter((condition) => condition !== null);
+      } else {
+        caronlyConditions = [];
+      }
+      if (onewayOps.checkboxes) {
+        const onewayRanges = ["0", "1"];
+        var onewayConditions = onewayOps.checkboxes
+          .map((onewayOp, index) => {
+            if (onewayOp) {
+              return (feature) =>
+                feature.properties.oneway === onewayRanges[index];
+            } else {
+              return null;
+            }
+          })
+          .filter((condition) => condition !== null);
+      } else {
+        onewayConditions = [];
+      }
+
+      if (
+        filterConditions.every((condition) => condition(feature)) &&
+        (laneConditions.length === 0 ||
+          laneConditions.some((condition) => condition(feature))) &&
+        (facilConditions.length === 0 ||
+          facilConditions.some((condition) => condition(feature))) &&
+        (speedConditions.length === 0 ||
+          speedConditions.some((condition) => condition(feature))) &&
+        (barrierConditions.length === 0 ||
+          barrierConditions.some((condition) => condition(feature))) &&
+        (lightConditions.length === 0 ||
+          lightConditions.some((condition) => condition(feature))) &&
+        (caronlyConditions.length === 0 ||
+          caronlyConditions.some((condition) => condition(feature))) &&
+        (onewayConditions.length === 0 ||
+          onewayConditions.some((condition) => condition(feature)))
+      ) {
+        return [230, 0, 60, 255 * 0.8];
+      } else {
+        return [0, 0, 0, 255 * 0.05];
+      }
+    } else if (depth1 === "TMS") {
+      if (feature.properties.aadt_pred < 30000) {
+        return [230, 0, 0, 255 * 0.8];
+      } else {
+        return [0, 230, 0, 255 * 0.8];
+      }
+    }
+  };
+  return {
+    getEmiVColor,
+    getEmiPColor,
+    getEmiBColor,
+    getRoadColor,
+    getTmsColor,
+  };
 };
 
 export default useEmiColor;

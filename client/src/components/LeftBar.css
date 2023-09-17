@@ -171,3 +171,7 @@
 .guide:hover + .guide2 {
   display: block;
 }
+
+.tmsItem {
+  padding-top: 10px;
+}

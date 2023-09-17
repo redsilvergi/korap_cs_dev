@@ -12,16 +12,8 @@ import { GoTriangleUp, GoTriangleDown } from "react-icons/go";
 import guide from "../img/guide.PNG";
 
 const LeftBar = ({ setData, setLD, setIsFilter }) => {
-  const {
-    info,
-    setInfo,
-    isSelect,
-    setIsSelect,
-    setTaasInfo,
-    // taasInfo,
-    // depth1,
-    // depth2,
-  } = useInfo();
+  const { info, setInfo, isSelect, setIsSelect, setTaasInfo, setTmsInfo } =
+    useInfo();
   //Modal/////////////////////////////////////////////////////////////
   const [showModal, setShowModal] = useState(false);
 
@@ -52,11 +44,21 @@ const LeftBar = ({ setData, setLD, setIsFilter }) => {
     setLD(true);
     try {
       const [nroadRes, emiRes, vpRes, ppRes, bpRes] = await Promise.all([
-        axios.get("/nr_sorted.geojson"),
-        axios.get("/emi_sorted.geojson"),
-        axios.get("/vcount_sorted.geojson"),
-        axios.get("/pcount_sorted.geojson"),
-        axios.get("/bcount_sorted.geojson"),
+        axios.get(
+          "https://eg-demo.s3.ap-northeast-1.amazonaws.com/aadt_sorted.geojson"
+        ),
+        axios.get(
+          "https://eg-demo.s3.ap-northeast-1.amazonaws.com/emi_sorted.geojson"
+        ),
+        axios.get(
+          "https://eg-demo.s3.ap-northeast-1.amazonaws.com/vcount_sorted.geojson"
+        ),
+        axios.get(
+          "https://eg-demo.s3.ap-northeast-1.amazonaws.com/pcount_sorted.geojson"
+        ),
+        axios.get(
+          "https://eg-demo.s3.ap-northeast-1.amazonaws.com/bcount_sorted.geojson"
+        ),
       ]);
 
       setData((prev) => ({
@@ -219,6 +221,11 @@ const LeftBar = ({ setData, setLD, setIsFilter }) => {
       ],
       updateInfo: (sel, chb) => setTaasInfo(chb),
     },
+    {
+      name: "AADT관점",
+      options: ["저", "중", "고"],
+      updateInfo: (sel, chb) => setTmsInfo(chb),
+    },
   ];
 
   const roadStatusItems = [
@@ -345,7 +352,11 @@ const LeftBar = ({ setData, setLD, setIsFilter }) => {
     {
       id: "TMS",
       label: "교통량(TMS)",
-      content: <div className="prep">- 준비중</div>,
+      content: (
+        <div className="tmsItem">
+          <CheckboxForm name={"AADT관점"} checklist={checklist} />
+        </div>
+      ),
     },
     {
       id: "TAAS",

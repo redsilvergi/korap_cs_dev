@@ -19,6 +19,7 @@ function InfoProvider({ children }) {
   });
 
   const [taasInfo, setTaasInfo] = useState([]);
+  const [tmsInfo, setTmsInfo] = useState([]);
 
   const [depth1, setDepth1] = useState(null);
   const [depth2, setDepth2] = useState(null);
@@ -34,6 +35,8 @@ function InfoProvider({ children }) {
         setIsSelect,
         taasInfo,
         setTaasInfo,
+        tmsInfo,
+        setTmsInfo,
         depth1,
         setDepth1,
         depth2,
