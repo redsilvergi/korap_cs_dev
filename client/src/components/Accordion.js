@@ -4,7 +4,14 @@ import "./Accordion.css";
 import useInfo from "../hooks/use-info";
 
 function Accordion({ items }) {
-  const { setInfo, setIsSelect, setTaasInfo, setDepth1, setDepth2 } = useInfo();
+  const {
+    setInfo,
+    setIsSelect,
+    setTmsInfo,
+    setTaasInfo,
+    setDepth1,
+    setDepth2,
+  } = useInfo();
   const [expandedIndex, setExpandedIndex] = useState([]);
 
   const reset = () => {
@@ -33,6 +40,7 @@ function Accordion({ items }) {
         break;
       case "TMS":
         setDepth1(null);
+        setDepth2(null);
         break;
       case "TAAS":
         setTaasInfo([]);
@@ -90,6 +98,11 @@ function Accordion({ items }) {
         setTaasInfo([]);
         setDepth2(null);
         break;
+      case "교통량지점":
+      case "교통량구간":
+        setTmsInfo([]);
+        setDepth2(null);
+        break;
       default:
         break;
     }
@@ -104,6 +117,7 @@ function Accordion({ items }) {
         switch (items[nextIndex].id) {
           case "도로현황":
             setTaasInfo([]);
+            setTmsInfo([]);
             setDepth1("도로현황");
             setDepth2(null);
             return [nextIndex];
@@ -115,7 +129,17 @@ function Accordion({ items }) {
             return [nextIndex];
           case "TAAS":
             reset();
+            setTmsInfo([]);
             setDepth1("TAAS");
+            setDepth2(null);
+            return [nextIndex];
+          case "교통량구간":
+            setTmsInfo([]);
+            setDepth2("교통량구간");
+            return [nextIndex];
+          case "교통량지점":
+            setTmsInfo([]);
+            setDepth2("교통량지점");
             return [nextIndex];
           case "차량관점":
             setTaasInfo([]);

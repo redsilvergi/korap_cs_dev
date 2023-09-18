@@ -1,16 +1,16 @@
 import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { Map } from "react-map-gl";
 import DeckGL, { GeoJsonLayer } from "deck.gl";
-// import { MVTLayer } from "@deck.gl/geo-layers";
 import "mapbox-gl/dist/mapbox-gl.css"; //remove console log error
 import "./LandingPage.css";
 import dissolvedRoad from "../National_Road_Dissolved3.json";
 import intPoint from "../National_Road_Interchange_Final_geojson.json";
 import LeftBar from "../components/LeftBar";
 import useTooltip from "../hooks/use-tooltip";
-import { GiExpand } from "react-icons/gi";
 import useInfo from "../hooks/use-info";
 import useEmiColor from "../hooks/use_emicolor";
+import Controls from "../components/Controls";
+import Basemap from "../components/Basemap";
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoicmVkc2lsdmVyNTIyIiwiYSI6ImNsaHl4enpjNzE4N3Eza3Bjemk3MTc1cDYifQ.EL1F3mAAhdlX1du8lCLDGw";
@@ -25,47 +25,31 @@ const INITIAL_VIEW_STATE = {
 
 function LandingPage() {
   const [LD, setLD] = useState(false);
-  const [isFilter, setIsFilter] = useState(false);
   const [view, setView] = useState(INITIAL_VIEW_STATE);
   const [data, setData] = useState({ nroad: null, emiroad: null });
   const [length, setLength] = useState(null);
   const { getTooltip } = useTooltip();
-  const { info, taasInfo, tmsInfo, depth1, depth2 } = useInfo();
+  const { info, taasInfo, tmsInfo, depth1, depth2, isFilter } = useInfo();
   const {
     getEmiVColor,
     getEmiPColor,
     getEmiBColor,
     getRoadColor,
     getTmsColor,
+    getTmsdColor,
   } = useEmiColor();
   const [hoveredItem, setHoveredItem] = useState(null);
   const [basemap, setBasemap] = useState(
     "mapbox://styles/redsilver522/cli2ji9m500w901pofuyqhbtz"
   );
 
-  const handleMap = () => {
-    const maps = [
-      "mapbox://styles/redsilver522/cli2ji9m500w901pofuyqhbtz",
-      "mapbox://styles/redsilver522/cll63rilr00aj01q08hjfa03s",
-      "mapbox://styles/redsilver522/cll6424pf00al01q0c5kz3w07",
-    ];
-
-    const currentIndex = maps.indexOf(basemap);
-    if (currentIndex !== -1) {
-      const nextIndex = (currentIndex + 1) % maps.length;
-      setBasemap(maps[nextIndex]);
-      return;
-    }
-    setBasemap(basemap);
-    return;
-  };
-
   //LAYERS
   const layer0 = new GeoJsonLayer({
     id: "oneroad",
     data: dissolvedRoad,
     lineWidthMaxPixels: 3,
-    getLineColor: [0, 0, 0, 150],
+    getLineColor:
+      depth2 !== "교통량지점" ? [0, 0, 0, 150] : [0, 0, 0, 255 * 0.2],
     getLineWidth: 500,
     visible: view.zoom >= 6 && depth1 !== "TAAS",
   });
@@ -84,7 +68,12 @@ function LandingPage() {
           case "도로현황":
             return getRoadColor(d);
           case "TMS":
-            return getTmsColor(d.properties.aadt_pred);
+            if (depth2 === "교통량구간") {
+              return getTmsColor(d.properties.aadt_pred);
+            } else {
+              return [230, 0, 60, 0];
+            }
+
           default:
             return [230, 0, 60];
         }
@@ -94,8 +83,9 @@ function LandingPage() {
       visible:
         isFilter &&
         view.zoom >= 6 &&
-        (depth1 === "도로현황" || depth1 === "TMS"),
-      onClick: (i, e) => console.log(i, e),
+        (depth1 === "도로현황" ||
+          (depth1 !== "TAAS" && depth2 !== "교통량지점" && depth2 !== null)),
+      // onClick: (i, e) => console.log(i, e),
       updateTriggers: {
         getLineColor: [info, depth1, tmsInfo],
       },
@@ -103,6 +93,7 @@ function LandingPage() {
   }, [
     data.nroad,
     depth1,
+    depth2,
     isFilter,
     view.zoom,
     info,
@@ -207,7 +198,7 @@ function LandingPage() {
       getPointRadius: getDynamicPointRadius,
       onHover: onHover,
       visible: isFilter && view.zoom >= 9.7 && depth2 === "차량관점",
-      onClick: (i, e) => console.log(i, e),
+      // onClick: (i, e) => console.log(i, e),
       updateTriggers: {
         getPointRadius: hoveredItem,
       },
@@ -282,7 +273,51 @@ function LandingPage() {
     hoveredItem,
     getDynamicPointRadius,
   ]);
-  const layers = [layer0, layer1, layer2, layer3, layer4, layer5, layer6];
+
+  const layer7 = useMemo(() => {
+    if (!data.aadtDot) return null;
+
+    return new GeoJsonLayer({
+      id: "aadtdot",
+      data: data.aadtDot,
+      lineWidthScale: 20,
+      lineWidthMaxPixels: 2,
+      pointRadiusMinPixels: 3,
+      pointRadiusMaxPixels: 7,
+      getFillColor: (d) => {
+        return getTmsdColor(d.properties.Resduals);
+      },
+      getLineColor: [0, 0, 0, 255 * 0.75],
+      pickable: true,
+      autoHighlight: true,
+      getPointRadius: 1000,
+      visible: isFilter && view.zoom >= 6 && depth2 === "교통량지점",
+      // onClick: (i, e) => console.log(i, e),
+      updateTriggers: {
+        getPointRadius: hoveredItem,
+        getFillColor: tmsInfo,
+      },
+    });
+  }, [
+    data.aadtDot,
+    depth2,
+    tmsInfo,
+    isFilter,
+    view.zoom,
+    hoveredItem,
+    getTmsdColor,
+  ]);
+
+  const layers = [
+    layer0,
+    layer1,
+    layer2,
+    layer3,
+    layer4,
+    layer5,
+    layer6,
+    layer7,
+  ];
 
   useEffect(() => {
     if (data.nroad && info && depth1 === "도로현황") {
@@ -504,7 +539,7 @@ function LandingPage() {
           : 0;
 
       setLength(totalLength);
-    } else if (data.nroad && tmsInfo && depth1 === "TMS") {
+    } else if (data.nroad && tmsInfo && depth2 === "교통량구간") {
       const filtered = data.nroad.features.filter((feature) => {
         let aadt, conditions;
 
@@ -529,8 +564,8 @@ function LandingPage() {
                 return acc + feature.properties.length;
               }, 0) / 1000
             )
-          : depth1 === "TMS"
-          ? 14927
+          : depth2 === "교통량구간"
+          ? 14933
           : 0;
 
       setLength(totalLength);
@@ -539,74 +574,16 @@ function LandingPage() {
     }
   }, [depth1, depth2, data.emiroad, taasInfo, data.nroad, info, tmsInfo]);
 
-  const handleState = () => {
-    console.log(
-      "\ndepth1:",
-      "\n",
-      depth1,
-      "\ndepth2:",
-      "\n",
-      depth2,
-      "\ninfo:",
-      "\n",
-      info,
-      "\ntaasInfo:",
-      "\n",
-      taasInfo,
-      "\ntmsInfo:",
-      "\n",
-      tmsInfo
-    );
-  };
-
   return (
     <div className="testc">
-      <LeftBar setData={setData} setLD={setLD} setIsFilter={setIsFilter} />
+      <LeftBar setData={setData} setLD={setLD} />
       <div className="container">
-        <div className="toggle_button_div">
-          <button
-            className="toggle_button"
-            onClick={() =>
-              setView((prev) => {
-                return {
-                  ...prev,
-                  zoom: prev.zoom < 20 ? prev.zoom + 1 : prev.zoom,
-                };
-              })
-            }
-          >
-            +
-          </button>
-          <button
-            className="toggle_button"
-            onClick={() =>
-              setView((prev) => ({
-                ...prev,
-                zoom: prev.zoom > 0.87 ? prev.zoom - 1 : prev.zoom,
-              }))
-            }
-          >
-            -
-          </button>
-          <button
-            className="toggle_button"
-            onClick={() => setView(INITIAL_VIEW_STATE)}
-          >
-            <GiExpand />
-          </button>
-          <button className="toggle_button" onClick={handleMap}>
-            M
-          </button>
-          <button
-            className="toggle_button"
-            onClick={() => setIsFilter(!isFilter)}
-          >
-            F
-          </button>
-          <button className="toggle_button" onClick={handleState}>
-            VS
-          </button>
-        </div>
+        <Basemap basemap={basemap} setBasemap={setBasemap} />
+        <Controls
+          view={view}
+          setView={setView}
+          INITIAL_VIEW_STATE={INITIAL_VIEW_STATE}
+        />
 
         <div className="lengthSum">
           선택구간 연장 <span>{length ? length : 0}</span> km

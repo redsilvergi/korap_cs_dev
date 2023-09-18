@@ -6,14 +6,20 @@ import Accordion from "./Accordion";
 import CheckboxForm from "./CheckboxForm";
 import useInfo from "../hooks/use-info";
 import Modal from "./Modal";
-// import PdfViewer from "./PdfViewer";
 import { CgFileDocument } from "react-icons/cg";
 import { GoTriangleUp, GoTriangleDown } from "react-icons/go";
-import guide from "../img/guide.PNG";
+import guide from "../img/guide2.PNG";
 
-const LeftBar = ({ setData, setLD, setIsFilter }) => {
-  const { info, setInfo, isSelect, setIsSelect, setTaasInfo, setTmsInfo } =
-    useInfo();
+const LeftBar = ({ setData, setLD }) => {
+  const {
+    info,
+    setInfo,
+    isSelect,
+    setIsSelect,
+    setTaasInfo,
+    setTmsInfo,
+    setIsFilter,
+  } = useInfo();
   //Modal/////////////////////////////////////////////////////////////
   const [showModal, setShowModal] = useState(false);
 
@@ -27,7 +33,7 @@ const LeftBar = ({ setData, setLD, setIsFilter }) => {
 
   const modal = (
     <Modal onClose={handleModClose}>
-      <img src={guide} alt="guide1" height="400%" />
+      <img src={guide} alt="guide1" height="700%" />
     </Modal>
   );
 
@@ -43,27 +49,20 @@ const LeftBar = ({ setData, setLD, setIsFilter }) => {
   const fetchData = useCallback(async () => {
     setLD(true);
     try {
-      const [nroadRes, emiRes, vpRes, ppRes, bpRes] = await Promise.all([
-        axios.get(
-          "https://eg-demo.s3.ap-northeast-1.amazonaws.com/aadt_sorted.geojson"
-        ),
-        axios.get(
-          "https://eg-demo.s3.ap-northeast-1.amazonaws.com/emi_sorted.geojson"
-        ),
-        axios.get(
-          "https://eg-demo.s3.ap-northeast-1.amazonaws.com/vcount_sorted.geojson"
-        ),
-        axios.get(
-          "https://eg-demo.s3.ap-northeast-1.amazonaws.com/pcount_sorted.geojson"
-        ),
-        axios.get(
-          "https://eg-demo.s3.ap-northeast-1.amazonaws.com/bcount_sorted.geojson"
-        ),
-      ]);
+      const [nroadRes, aadtDot, emiRes, vpRes, ppRes, bpRes] =
+        await Promise.all([
+          axios.get("/aadt.geojson"), //https://{bucketname}.s3.ap-northeast-1.amazonaws.com
+          axios.get("/aadtdot.geojson"),
+          axios.get("/emi_sorted.geojson"),
+          axios.get("/vcount_sorted.geojson"),
+          axios.get("/pcount_sorted.geojson"),
+          axios.get("/bcount_sorted.geojson"),
+        ]);
 
       setData((prev) => ({
         ...prev,
         nroad: nroadRes.data,
+        aadtDot: aadtDot.data,
         emiroad: emiRes.data,
         vpoint: vpRes.data,
         ppoint: ppRes.data,
@@ -136,18 +135,6 @@ const LeftBar = ({ setData, setLD, setIsFilter }) => {
   ];
 
   ///////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////
-
-  // useEffect(() => {
-  //   console.log(
-  //     "UPDATE info taasinfo depth1,2:",
-  //     info,
-  //     taasInfo,
-  //     depth1,
-  //     depth2
-  //   );
-  // }, [info, taasInfo, depth1, depth2]);
-
   const checklist = [
     {
       name: "차로수별",
@@ -224,6 +211,11 @@ const LeftBar = ({ setData, setLD, setIsFilter }) => {
     {
       name: "AADT관점",
       options: ["저", "중", "고"],
+      updateInfo: (sel, chb) => setTmsInfo(chb),
+    },
+    {
+      name: "AADTDOT관점",
+      options: ["예측치 과다", "예측치 정확", "예측치 과소"],
       updateInfo: (sel, chb) => setTmsInfo(chb),
     },
   ];
@@ -312,7 +304,26 @@ const LeftBar = ({ setData, setLD, setIsFilter }) => {
       ),
     },
   ];
-
+  const tmsItems = [
+    {
+      id: "교통량구간",
+      label: "- 예측 교통량",
+      content: (
+        <div className="roadItem">
+          <CheckboxForm name={"AADT관점"} checklist={checklist} />
+        </div>
+      ),
+    },
+    {
+      id: "교통량지점",
+      label: "- 교통량 측정 지점",
+      content: (
+        <div className="roadItem">
+          <CheckboxForm name={"AADTDOT관점"} checklist={checklist} />
+        </div>
+      ),
+    },
+  ];
   const taasItems = [
     {
       id: "차량관점",
@@ -352,11 +363,7 @@ const LeftBar = ({ setData, setLD, setIsFilter }) => {
     {
       id: "TMS",
       label: "교통량(TMS)",
-      content: (
-        <div className="tmsItem">
-          <CheckboxForm name={"AADT관점"} checklist={checklist} />
-        </div>
-      ),
+      content: <Accordion items={tmsItems} />,
     },
     {
       id: "TAAS",
@@ -386,14 +393,18 @@ const LeftBar = ({ setData, setLD, setIsFilter }) => {
 
         <div className="footnote">
           <div className="fnt">데이터 출처</div>
+          <div>· 교통망 GIS DB(도로망), 국가교통DB, 국토부/KOTI, 2019</div>
           <div>
-            · 2019, 국가교통 도로망 GIS 데이터, 국토부/KOTI 2020-2022, GIS
+            · 수치지형도(도로중심선), 국토정보플랫폼(NGII), 국토지리정보원, 2022
           </div>
           <div>
-            · 분석시스템: 교통사고 분석, 교통사고분석시스템(TAAS), 도로교통공단
+            · 교통사고 데이터, 교통사고분석시스템(TAAS), 도로교통공단, 2020-2022
           </div>
-          <div>· 2023, 수치지형도(도로중심선데이터), 국토지리정보원</div>
-          <br />
+          <div style={{ marginBottom: "7px" }}>
+            · 상시조사 교통량 데이터, 교통량정보제공시스템(TMS),
+            한국건설기술연구원, 2022
+          </div>
+
           <div>*시차로 인한 속성정보 누락구간에 유의·활용 바랍니다.</div>
 
           {showModal && modal}

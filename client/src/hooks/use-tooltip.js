@@ -140,7 +140,7 @@ const useTooltip = () => {
           op && {
             html: `
               <div style="color: #333333; font-weight: bold; font-size: 0.8rem; line-height: 2;">
-                ${`도로명: (ID: ${op.uid})`}
+                ${`도로명: (ID: ${op.UID})`}
               </div>
                 <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
                   ${`· ${info.roadNo.name}: ${op.road_no}`}
@@ -170,42 +170,66 @@ const useTooltip = () => {
           }
         );
       case "TMS":
-        return (
-          op && {
-            html: `
-                <div style="color: #333333; font-weight: bold; font-size: 0.8rem; line-height: 2;">
-                  ${`도로명: (ID: ${op.uid})`}
-                </div>
-                  <div style="color: red; font-size: 0.8rem; line-height: 2;">
-                    ${`· AADT: ${op.aadt_pred}`}
+        if (depth2 === "교통량구간") {
+          return (
+            op && {
+              html: `
+                  <div style="color: #333333; font-weight: bold; font-size: 0.8rem; line-height: 2;">
+                    ${`도로명: (ID: ${op.UID})`}
                   </div>
-                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
-                    ${`· ${info.roadNo.name}: ${op.road_no}`}
+                    <div style="color: red; font-size: 0.8rem; line-height: 2;">
+                      ${`· AADT: ${op.aadt_pred}`}
+                    </div>
+                    <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                      ${`· ${info.roadNo.name}: ${op.road_no}`}
+                    </div>
+                    <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                      ${`· ${info.laneOps.name}: ${laneF(op.width)}`}
+                    </div>
+                    <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                    ${`· ${info.facilOps.name}: ${facilF(op.facil_kind)}`}
+                    </div>
+                    <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                    ${`· ${info.speedOps.name}: ${speedF(op.max_spd)}`}
+                    </div>
+                    <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                    ${`· ${info.barrierOps.name}: ${barrierF(op.barrier)}`}
+                    </div>
+                    <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                    ${`· ${info.lightOps.name}: ${lightF(op.num_cross)}`}
+                    </div>
+                    <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                    ${`· ${info.caronlyOps.name}: ${caronlyF(op.auto_exclu)}`}
+                    </div>
+                    <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                    ${`· ${info.onewayOps.name}: ${onewayF(op.oneway)}`}
+                    </div>
+                  `,
+            }
+          );
+        } else if (depth2 === "교통량지점") {
+          return (
+            op && {
+              html: `
+                  <div style="color: #333333; font-weight: bold; font-size: 0.8rem; line-height: 2;">
+                    ${`지점번호: ${op.지점번호}`}
                   </div>
-                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
-                    ${`· ${info.laneOps.name}: ${laneF(op.width)}`}
-                  </div>
-                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
-                  ${`· ${info.facilOps.name}: ${facilF(op.facil_kind)}`}
-                  </div>
-                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
-                  ${`· ${info.speedOps.name}: ${speedF(op.max_spd)}`}
-                  </div>
-                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
-                  ${`· ${info.barrierOps.name}: ${barrierF(op.barrier)}`}
-                  </div>
-                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
-                  ${`· ${info.lightOps.name}: ${lightF(op.num_cross)}`}
-                  </div>
-                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
-                  ${`· ${info.caronlyOps.name}: ${caronlyF(op.auto_exclu)}`}
-                  </div>
-                  <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
-                  ${`· ${info.onewayOps.name}: ${onewayF(op.oneway)}`}
-                  </div>
-                `,
-          }
-        );
+                    <div style="color: red; font-size: 0.8rem; line-height: 2;">
+                      ${`· ERR: ${op.Resduals}`}
+                      <br />
+                      &nbsp 오차 [AADT관측값 - AADT예측값]
+                    </div>
+                    <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                      ${`· AADT관측값: ${op.AADT}`}
+                    </div>
+                    <div style="color: #808080; font-size: 0.8rem; line-height: 2;">
+                      ${`· AADT예측값: ${op.AADT_pred_}`}
+                    </div>
+                  `,
+            }
+          );
+        }
+        break;
       case "TAAS":
         if (op && taasInfo) {
           let fa, si, li, ri, emi;

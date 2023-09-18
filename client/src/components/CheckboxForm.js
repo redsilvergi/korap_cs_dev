@@ -206,55 +206,114 @@ const CheckboxForm = ({ name, checklist }) => {
   ];
 
   const tmsItem = [
-    <div className="titm titm_tms">
-      <div className="emi1">
-        <BsDashSquareFill className="icon" />
-        <div>&nbsp;1524 &lt; AADT ≤ 3220</div>
-      </div>
-      <div className="emi2">
-        <BsDashSquareFill className="icon" />
-        <div>&nbsp;3220 &lt; AADT ≤ 10114</div>
-      </div>
-      <div className="emi3">
-        <BsDashSquareFill className="icon" />
-        <div>&nbsp;10114 &lt; AADT ≤ 18271</div>
-      </div>
-    </div>,
-    <div className="titm titm_tms">
-      <div className="emi4">
-        <BsDashSquareFill className="icon" />
-        <div>&nbsp;18271 &lt; AADT ≤ 28562</div>
-      </div>
-      <div className="emi5">
-        <BsDashSquareFill className="icon" />
-        <div>&nbsp;28562 &lt; AADT ≤ 41859</div>
-      </div>
-      <div className="emi6">
-        <BsDashSquareFill className="icon" />
-        <div>&nbsp;41859 &lt; AADT ≤ 59391</div>
-      </div>
-      <div className="emi7">
-        <BsDashSquareFill className="icon" />
-        <div>&nbsp;59391 &lt; AADT ≤ 82417</div>
-      </div>
-    </div>,
-    <div>
+    [
       <div className="titm titm_tms">
-        <div className="emi8">
+        <div className="emi1">
           <BsDashSquareFill className="icon" />
-          <div>&nbsp;82417 &lt; AADT ≤ 119530</div>
+          <div>&nbsp;1524 &lt; AADT ≤ 3220</div>
         </div>
-        <div className="emi9">
+        <div className="emi2">
           <BsDashSquareFill className="icon" />
-          <div>&nbsp;119530 &lt; AADT ≤ 188392</div>
+          <div>&nbsp;3220 &lt; AADT ≤ 10114</div>
         </div>
-        <div className="emi10">
+        <div className="emi3">
           <BsDashSquareFill className="icon" />
-          <div>&nbsp;188392 &lt; AADT ≤ 298292</div>
+          <div>&nbsp;10114 &lt; AADT ≤ 18271</div>
         </div>
-      </div>
-      <div className="emi_des">*AADT TMS(교통량).</div>
-    </div>,
+      </div>,
+      <div className="titm titm_tms">
+        <div className="emi4">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;18271 &lt; AADT ≤ 28562</div>
+        </div>
+        <div className="emi5">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;28562 &lt; AADT ≤ 41859</div>
+        </div>
+        <div className="emi6">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;41859 &lt; AADT ≤ 59391</div>
+        </div>
+        <div className="emi7">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;59391 &lt; AADT ≤ 82417</div>
+        </div>
+      </div>,
+      <div>
+        <div className="titm titm_tms">
+          <div className="emi8">
+            <BsDashSquareFill className="icon" />
+            <div>&nbsp;82417 &lt; AADT ≤ 119530</div>
+          </div>
+          <div className="emi9">
+            <BsDashSquareFill className="icon" />
+            <div>&nbsp;119530 &lt; AADT ≤ 188392</div>
+          </div>
+          <div className="emi10">
+            <BsDashSquareFill className="icon" />
+            <div>&nbsp;188392 &lt; AADT ≤ 298292</div>
+          </div>
+        </div>
+        <div className="emi_des">
+          *AADT(Annual Average Daily Traffic)란 '연평균 일교통량'의 약자입니다.
+        </div>
+      </div>,
+    ],
+    [
+      <div className="titm titm_tms">
+        <div className="emi1">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;-138359 &lt; ERR ≤ -103702</div>
+        </div>
+        <div className="emi2">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;-103702 &lt; ERR ≤ -39698</div>
+        </div>
+        <div className="emi3">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;-39698 &lt; ERR ≤ -18044</div>
+        </div>
+      </div>,
+      <div className="titm titm_tms">
+        <div className="emi4">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;-18044 &lt; ERR ≤ -9069</div>
+        </div>
+        <div className="emi5">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;-9069 &lt; ERR ≤ -4186</div>
+        </div>
+        <div className="emi6">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;-4186 &lt; ERR ≤ 874</div>
+        </div>
+        <div className="emi7">
+          <BsDashSquareFill className="icon" />
+          <div>&nbsp;874 &lt; ERR ≤ 8511</div>
+        </div>
+      </div>,
+      <div>
+        <div className="titm titm_tms">
+          <div className="emi8">
+            <BsDashSquareFill className="icon" />
+            <div>&nbsp;8511 &lt; ERR ≤ 20834</div>
+          </div>
+          <div className="emi9">
+            <BsDashSquareFill className="icon" />
+            <div>&nbsp;20834 &lt; ERR ≤ 46700</div>
+          </div>
+          <div className="emi10">
+            <BsDashSquareFill className="icon" />
+            <div>&nbsp;46700 &lt; ERR ≤ 92842</div>
+          </div>
+        </div>
+        <div className="emi_des">
+          *ERR: 오차(AADT관측값 - AADT예측값)
+          <br />
+          *AADT(Annual Average Daily Traffic)란 '연평균 일교통량'의 약자입니다.
+        </div>
+      </div>,
+    ],
   ];
 
   return (
@@ -288,7 +347,11 @@ const CheckboxForm = ({ name, checklist }) => {
               ? taasItem[2][index]
               : null
             : depth1 === "TMS"
-            ? tmsItem[index]
+            ? depth2 === "교통량구간"
+              ? tmsItem[0][index]
+              : depth2 === "교통량지점"
+              ? tmsItem[1][index]
+              : null
             : null}
         </div>
       ))}

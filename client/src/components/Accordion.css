@@ -32,6 +32,8 @@
 .신호등개수별_accitem,
 .자동차전용도로유무별_accitem,
 .일방통행유무별_accitem,
+.교통량구간_accitem,
+.교통량지점_accitem,
 .차량관점_accitem,
 .보행자관점_accitem,
 .자전거관점_accitem {

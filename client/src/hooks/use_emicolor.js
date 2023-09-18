@@ -210,6 +210,58 @@ const useEmiColor = () => {
     }
   };
 
+  const getTmsdColor = (d) => {
+    if (tmsInfo.every((val) => val === false)) {
+      if (46700 < d && d <= 92842) {
+        return [0, 166, 172, 255 * 1];
+      } else if (20834 < d && d <= 46700) {
+        return [43, 150, 175, 255 * 1];
+      } else if (8511 < d && d <= 20834) {
+        return [86, 134, 178, 255 * 1];
+      } else if (874 < d && d <= 8511) {
+        return [129, 118, 181, 255 * 1];
+      } else if (-4186 < d && d <= 874) {
+        return [164, 126, 161, 255 * 1];
+      } else if (-9069 < d && d <= -4186) {
+        return [198, 133, 140, 255 * 1];
+      } else if (-18044 < d && d <= -9069) {
+        return [233, 141, 120, 255 * 1];
+      } else if (-39698 < d && d <= -18044) {
+        return [218, 94, 84, 255 * 1];
+      } else if (-103702 < d && d <= -39698) {
+        return [204, 47, 47, 255 * 1];
+      } else if (-138359 <= d && d <= -103702) {
+        return [189, 0, 11, 255 * 1];
+      } else {
+        return [255, 0, 0, 255 * 1];
+      }
+    } else {
+      if (46700 < d && d <= 92842) {
+        return tmsInfo[0] ? [0, 166, 172, 255 * 1] : [0, 0, 0, 255 * 0.05];
+      } else if (20834 < d && d <= 46700) {
+        return tmsInfo[0] ? [43, 150, 175, 255 * 1] : [0, 0, 0, 255 * 0.05];
+      } else if (8511 < d && d <= 20834) {
+        return tmsInfo[0] ? [86, 134, 178, 255 * 1] : [0, 0, 0, 255 * 0.05];
+      } else if (874 < d && d <= 8511) {
+        return tmsInfo[1] ? [129, 118, 181, 255 * 1] : [0, 0, 0, 255 * 0.05];
+      } else if (-4186 < d && d <= 874) {
+        return tmsInfo[1] ? [164, 126, 161, 255 * 1] : [0, 0, 0, 255 * 0.05];
+      } else if (-9069 < d && d <= -4186) {
+        return tmsInfo[1] ? [198, 133, 140, 255 * 1] : [0, 0, 0, 255 * 0.05];
+      } else if (-18044 < d && d <= -9069) {
+        return tmsInfo[1] ? [233, 141, 120, 255 * 1] : [0, 0, 0, 255 * 0.05];
+      } else if (-39698 < d && d <= -18044) {
+        return tmsInfo[2] ? [218, 94, 84, 255 * 1] : [0, 0, 0, 255 * 0.05];
+      } else if (-103702 < d && d <= -39698) {
+        return tmsInfo[2] ? [204, 47, 47, 255 * 1] : [0, 0, 0, 255 * 0.05];
+      } else if (-138359 <= d && d <= -103702) {
+        return tmsInfo[2] ? [189, 0, 11, 255 * 1] : [0, 0, 0, 255 * 0.05];
+      } else {
+        return [255, 0, 0, 255 * 1];
+      }
+    }
+  };
+
   const getRoadColor = (feature) => {
     if (depth1 === "도로현황") {
       const {
@@ -366,12 +418,6 @@ const useEmiColor = () => {
       } else {
         return [0, 0, 0, 255 * 0.05];
       }
-    } else if (depth1 === "TMS") {
-      if (feature.properties.aadt_pred < 30000) {
-        return [230, 0, 0, 255 * 0.8];
-      } else {
-        return [0, 230, 0, 255 * 0.8];
-      }
     }
   };
   return {
@@ -380,6 +426,7 @@ const useEmiColor = () => {
     getEmiBColor,
     getRoadColor,
     getTmsColor,
+    getTmsdColor,
   };
 };
 
