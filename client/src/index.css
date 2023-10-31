@@ -1,6 +1,7 @@
 body {
   margin: 0;
   font-family: "NanumSquare", sans-serif;
+  overflow: hidden;
 }
 
 .deck-tooltip {

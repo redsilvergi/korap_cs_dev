@@ -11,6 +11,7 @@ import useInfo from "../hooks/use-info";
 import useEmiColor from "../hooks/use_emicolor";
 import Controls from "../components/Controls";
 import Basemap from "../components/Basemap";
+import TopBar from "../components/TopBar";
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoicmVkc2lsdmVyNTIyIiwiYSI6ImNsaHl4enpjNzE4N3Eza3Bjemk3MTc1cDYifQ.EL1F3mAAhdlX1du8lCLDGw";
@@ -576,6 +577,7 @@ function LandingPage() {
 
   return (
     <div className="testc">
+      <TopBar />
       <LeftBar setData={setData} setLD={setLD} />
       <div className="container">
         <Basemap basemap={basemap} setBasemap={setBasemap} />

@@ -1,0 +1,36 @@
+.top_column {
+  position: fixed;
+  background-color: #e6003c;
+  z-index: 2;
+  height: 50px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top_column a {
+  text-decoration: none;
+  width: 220px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top_column a:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.top_column div {
+  color: #fcfcfd;
+  font-weight: bold;
+  font-size: 16pt;
+  text-align: center;
+  margin: 0;
+  padding: 5px;
+}
+
+.top_column div:hover {
+  cursor: pointer;
+}

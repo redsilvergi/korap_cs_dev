@@ -1,14 +1,14 @@
 import "./LeftBar.css";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import axios from "axios";
 import Dropdown from "../components/Dropdwon";
 import Accordion from "./Accordion";
 import CheckboxForm from "./CheckboxForm";
 import useInfo from "../hooks/use-info";
-import Modal from "./Modal";
-import { CgFileDocument } from "react-icons/cg";
+// import Modal from "./Modal";
+// import { CgFileDocument } from "react-icons/cg";
 import { GoTriangleUp, GoTriangleDown } from "react-icons/go";
-import guide from "../img/guide2.PNG";
+// import guide from "../img/guide2.PNG";
 
 const LeftBar = ({ setData, setLD }) => {
   const {
@@ -20,24 +20,24 @@ const LeftBar = ({ setData, setLD }) => {
     setTmsInfo,
     setIsFilter,
   } = useInfo();
-  //Modal/////////////////////////////////////////////////////////////
-  const [showModal, setShowModal] = useState(false);
+  // //Modal/////////////////////////////////////////////////////////////
+  // const [showModal, setShowModal] = useState(false);
 
-  const handleModOpen = () => {
-    setShowModal(true);
-  };
+  // const handleModOpen = () => {
+  //   setShowModal(true);
+  // };
 
-  const handleModClose = () => {
-    setShowModal(false);
-  };
+  // const handleModClose = () => {
+  //   setShowModal(false);
+  // };
 
-  const modal = (
-    <Modal onClose={handleModClose}>
-      <img src={guide} alt="guide1" height="700%" />
-    </Modal>
-  );
+  // const modal = (
+  //   <Modal onClose={handleModClose}>
+  //     <img src={guide} alt="guide1" height="700%" />
+  //   </Modal>
+  // );
 
-  ///////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////////
   useEffect(() => {
     !isSelect &&
       setInfo((prev) => ({
@@ -51,12 +51,18 @@ const LeftBar = ({ setData, setLD }) => {
     try {
       const [nroadRes, aadtDot, emiRes, vpRes, ppRes, bpRes] =
         await Promise.all([
-          axios.get("/aadt.geojson"), //https://{bucketname}.s3.ap-northeast-1.amazonaws.com
-          axios.get("/aadtdot.geojson"),
-          axios.get("/emi_sorted.geojson"),
-          axios.get("/vcount_sorted.geojson"),
-          axios.get("/pcount_sorted.geojson"),
-          axios.get("/bcount_sorted.geojson"),
+          axios.get("https://d2vuklgckwaas3.cloudfront.net/aadt.geojson"), //https://{bucketname}.s3.ap-northeast-1.amazonaws.com
+          axios.get("https://d2vuklgckwaas3.cloudfront.net/aadtdot.geojson"), //https://eg-demo.s3.ap-northeast-1.amazonaws.com/aadt.geojson
+          axios.get("https://d2vuklgckwaas3.cloudfront.net/emi_sorted.geojson"),
+          axios.get(
+            "https://d2vuklgckwaas3.cloudfront.net/vcount_sorted.geojson"
+          ), ///emi_sorted.geojson
+          axios.get(
+            "https://d2vuklgckwaas3.cloudfront.net/pcount_sorted.geojson"
+          ),
+          axios.get(
+            "https://d2vuklgckwaas3.cloudfront.net/bcount_sorted.geojson"
+          ),
         ]);
 
       setData((prev) => ({
@@ -376,7 +382,7 @@ const LeftBar = ({ setData, setLD }) => {
   ///////////////////////////////////////////////////////////////
   return (
     <div>
-      <div className="left_column">
+      {/* <div className="left_column">
         <a href="./">
           <p>일반국도현황</p>
         </a>
@@ -384,14 +390,14 @@ const LeftBar = ({ setData, setLD }) => {
           <CgFileDocument style={{ color: "white", fontSize: "25px" }} />
         </div>
         <div className="guide2">데이터 설명서</div>
-      </div>
+      </div> */}
 
       <div className="detail_div">
         <div className="accordion_div">
           <Accordion items={items} />
         </div>
 
-        <div className="footnote">
+        {/* <div className="footnote">
           <div className="fnt">데이터 출처</div>
           <div>· 교통망 GIS DB(도로망), 국가교통DB, 국토부/KOTI, 2019</div>
           <div>
@@ -406,10 +412,9 @@ const LeftBar = ({ setData, setLD }) => {
           </div>
 
           <div>*시차로 인한 속성정보 누락구간에 유의·활용 바랍니다.</div>
-
-          {showModal && modal}
-        </div>
+        </div> */}
       </div>
+      {/* {showModal && modal} */}
     </div>
   );
 };
