@@ -5,7 +5,16 @@ import { GiExpand } from "react-icons/gi";
 import { BiHide } from "react-icons/bi";
 
 const Controls = ({ setView, INITIAL_VIEW_STATE }) => {
-  const { isFilter, setIsFilter } = useInfo();
+  const {
+    isFilter,
+    setIsFilter,
+    view,
+    depth1,
+    depth2,
+    info,
+    taasInfo,
+    tmsInfo,
+  } = useInfo();
 
   return (
     <div className="toggle_button_div">
@@ -43,7 +52,7 @@ const Controls = ({ setView, INITIAL_VIEW_STATE }) => {
       <button className="toggle_button" onClick={() => setIsFilter(!isFilter)}>
         <BiHide />
       </button>
-      {/* <button
+      <button
         className="toggle_button"
         onClick={() =>
           console.log(
@@ -67,7 +76,7 @@ const Controls = ({ setView, INITIAL_VIEW_STATE }) => {
         }
       >
         VS
-      </button> */}
+      </button>
     </div>
   );
 };

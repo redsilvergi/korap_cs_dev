@@ -111,39 +111,6 @@
   background-color: #e5fcf6 !important;
 }
 
-.guide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-  margin-bottom: 15px;
-  color: white;
-  border-radius: 10%;
-}
-
-.guide:hover {
-  background-color: #af003f;
-  cursor: pointer;
-}
-
-.guide2 {
-  display: none;
-  position: fixed;
-  left: 25px;
-  bottom: 50px;
-  z-index: 2;
-  background-color: white;
-  border-radius: 5px;
-  padding: 5px 12px 5px 12px;
-  font-size: 10pt;
-  color: #808080;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-}
-
-.guide:hover + .guide2 {
-  display: block;
-}
-
 .tmsItem {
   padding-top: 10px;
 }

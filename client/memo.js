@@ -52,3 +52,42 @@
 //   },
 //   onClick: (d) => handleClick(d.object.properties.RDLN),
 // });
+
+// const fetchData = useCallback(async () => {
+//   setLD(true);
+//   try {
+//     const [emiRes, vpRes, ppRes, bpRes] = await Promise.all([
+//       // axios.get("https://d2vuklgckwaas3.cloudfront.net/aadt.geojson"), //https://{bucketname}.s3.ap-northeast-1.amazonaws.com
+//       // axios.get("https://d2vuklgckwaas3.cloudfront.net/aadtdot.geojson"), //https://eg-demo.s3.ap-northeast-1.amazonaws.com/aadt.geojson
+//       axios.get("https://d2vuklgckwaas3.cloudfront.net/emi_sorted.geojson"),
+//       axios.get(
+//         "https://d2vuklgckwaas3.cloudfront.net/vcount_sorted.geojson"
+//       ), ///emi_sorted.geojson
+//       axios.get(
+//         "https://d2vuklgckwaas3.cloudfront.net/pcount_sorted.geojson"
+//       ),
+//       axios.get(
+//         "https://d2vuklgckwaas3.cloudfront.net/bcount_sorted.geojson"
+//       ),
+//     ]);
+
+//     setData((prev) => ({
+//       ...prev,
+//       // nroad: nroadRes.data,
+//       // aadtDot: aadtDot.data,
+//       emiroad: emiRes.data,
+//       vpoint: vpRes.data,
+//       ppoint: ppRes.data,
+//       bpoint: bpRes.data,
+//     }));
+//   } catch (err) {
+//     console.error("Error fetching data:", err);
+//   } finally {
+//     setLD(false);
+//     setIsFilter(true);
+//   }
+// }, [setData, setIsFilter, setLD]);
+
+// useEffect(() => {
+//   fetchData();
+// }, [fetchData]);

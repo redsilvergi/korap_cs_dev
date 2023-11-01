@@ -1,43 +1,15 @@
-import "./LeftBar.css";
-import React, { useCallback, useEffect } from "react";
-import axios from "axios";
-import Dropdown from "../components/Dropdwon";
+import "./LBcurr.css";
+import React, { useEffect } from "react";
+import Dropdown from "./Dropdwon";
 import Accordion from "./Accordion";
 import CheckboxForm from "./CheckboxForm";
 import useInfo from "../hooks/use-info";
-// import Modal from "./Modal";
-// import { CgFileDocument } from "react-icons/cg";
 import { GoTriangleUp, GoTriangleDown } from "react-icons/go";
-// import guide from "../img/guide2.PNG";
 
-const LeftBar = ({ setData, setLD }) => {
-  const {
-    info,
-    setInfo,
-    isSelect,
-    setIsSelect,
-    setTaasInfo,
-    setTmsInfo,
-    setIsFilter,
-  } = useInfo();
-  // //Modal/////////////////////////////////////////////////////////////
-  // const [showModal, setShowModal] = useState(false);
+const LBcurr = () => {
+  const { info, setInfo, isSelect, setIsSelect, setTaasInfo, setTmsInfo } =
+    useInfo();
 
-  // const handleModOpen = () => {
-  //   setShowModal(true);
-  // };
-
-  // const handleModClose = () => {
-  //   setShowModal(false);
-  // };
-
-  // const modal = (
-  //   <Modal onClose={handleModClose}>
-  //     <img src={guide} alt="guide1" height="700%" />
-  //   </Modal>
-  // );
-
-  // ///////////////////////////////////////////////////////////////
   useEffect(() => {
     !isSelect &&
       setInfo((prev) => ({
@@ -45,46 +17,6 @@ const LeftBar = ({ setData, setLD }) => {
         roadNo: { ...prev.roadNo, selected: null },
       }));
   }, [isSelect, setInfo]);
-
-  const fetchData = useCallback(async () => {
-    setLD(true);
-    try {
-      const [nroadRes, aadtDot, emiRes, vpRes, ppRes, bpRes] =
-        await Promise.all([
-          axios.get("https://d2vuklgckwaas3.cloudfront.net/aadt.geojson"), //https://{bucketname}.s3.ap-northeast-1.amazonaws.com
-          axios.get("https://d2vuklgckwaas3.cloudfront.net/aadtdot.geojson"), //https://eg-demo.s3.ap-northeast-1.amazonaws.com/aadt.geojson
-          axios.get("https://d2vuklgckwaas3.cloudfront.net/emi_sorted.geojson"),
-          axios.get(
-            "https://d2vuklgckwaas3.cloudfront.net/vcount_sorted.geojson"
-          ), ///emi_sorted.geojson
-          axios.get(
-            "https://d2vuklgckwaas3.cloudfront.net/pcount_sorted.geojson"
-          ),
-          axios.get(
-            "https://d2vuklgckwaas3.cloudfront.net/bcount_sorted.geojson"
-          ),
-        ]);
-
-      setData((prev) => ({
-        ...prev,
-        nroad: nroadRes.data,
-        aadtDot: aadtDot.data,
-        emiroad: emiRes.data,
-        vpoint: vpRes.data,
-        ppoint: ppRes.data,
-        bpoint: bpRes.data,
-      }));
-    } catch (err) {
-      console.error("Error fetching data:", err);
-    } finally {
-      setLD(false);
-      setIsFilter(true);
-    }
-  }, [setData, setIsFilter, setLD]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   const roadOps = [
     [1, "목포-신의주"],
@@ -382,16 +314,6 @@ const LeftBar = ({ setData, setLD }) => {
   ///////////////////////////////////////////////////////////////
   return (
     <div>
-      {/* <div className="left_column">
-        <a href="./">
-          <p>일반국도현황</p>
-        </a>
-        <div onClick={handleModOpen} className="guide">
-          <CgFileDocument style={{ color: "white", fontSize: "25px" }} />
-        </div>
-        <div className="guide2">데이터 설명서</div>
-      </div> */}
-
       <div className="detail_div">
         <div className="accordion_div">
           <Accordion items={items} />
@@ -414,9 +336,8 @@ const LeftBar = ({ setData, setLD }) => {
           <div>*시차로 인한 속성정보 누락구간에 유의·활용 바랍니다.</div>
         </div> */}
       </div>
-      {/* {showModal && modal} */}
     </div>
   );
 };
 
-export default LeftBar;
+export default LBcurr;

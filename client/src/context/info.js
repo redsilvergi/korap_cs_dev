@@ -22,11 +22,15 @@ function InfoProvider({ children }) {
   const [tmsInfo, setTmsInfo] = useState([]);
   const [tmsdInfo, setTmsdInfo] = useState([]);
 
+  const [depth0, setDepth0] = useState(0);
   const [depth1, setDepth1] = useState(null);
   const [depth2, setDepth2] = useState(null);
 
   const [isSelect, setIsSelect] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
+
+  const [LD, setLD] = useState(false);
+  const [data, setData] = useState({ nroad: null, emiroad: null });
 
   return (
     <InfoContext.Provider
@@ -39,6 +43,8 @@ function InfoProvider({ children }) {
         setTaasInfo,
         tmsInfo,
         setTmsInfo,
+        depth0,
+        setDepth0,
         depth1,
         setDepth1,
         depth2,
@@ -47,6 +53,10 @@ function InfoProvider({ children }) {
         setIsFilter,
         tmsdInfo,
         setTmsdInfo,
+        LD,
+        setLD,
+        data,
+        setData,
       }}
     >
       {children}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
 import "./Accordion.css";
 import useInfo from "../hooks/use-info";
+import axios from "axios";
 
 function Accordion({ items }) {
   const {
@@ -11,6 +12,10 @@ function Accordion({ items }) {
     setTaasInfo,
     setDepth1,
     setDepth2,
+    setLD,
+    setIsFilter,
+    data,
+    setData,
   } = useInfo();
   const [expandedIndex, setExpandedIndex] = useState([]);
 
@@ -30,6 +35,58 @@ function Accordion({ items }) {
       onewayOps: { name: "일방통행유무", selected: null, checkboxes: null },
     });
     setIsSelect(false);
+  };
+
+  const fetchaadt = async () => {
+    setLD(true);
+    try {
+      const [aadtRes, aadtDot] = await Promise.all([
+        axios.get("https://d2vuklgckwaas3.cloudfront.net/aadt.geojson"),
+        axios.get("https://d2vuklgckwaas3.cloudfront.net/aadtdot.geojson"),
+      ]);
+
+      setData((prev) => ({
+        ...prev,
+        nroad: aadtRes.data,
+        aadtDot: aadtDot.data,
+      }));
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    } finally {
+      setLD(false);
+      setIsFilter(true);
+    }
+  };
+
+  const fetchemi = async () => {
+    setLD(true);
+    try {
+      const [emiRes, vpRes, ppRes, bpRes] = await Promise.all([
+        axios.get("https://d2vuklgckwaas3.cloudfront.net/emi_sorted.geojson"),
+        axios.get(
+          "https://d2vuklgckwaas3.cloudfront.net/vcount_sorted.geojson"
+        ), ///emi_sorted.geojson
+        axios.get(
+          "https://d2vuklgckwaas3.cloudfront.net/pcount_sorted.geojson"
+        ),
+        axios.get(
+          "https://d2vuklgckwaas3.cloudfront.net/bcount_sorted.geojson"
+        ),
+      ]);
+
+      setData((prev) => ({
+        ...prev,
+        emiroad: emiRes.data,
+        vpoint: vpRes.data,
+        ppoint: ppRes.data,
+        bpoint: bpRes.data,
+      }));
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    } finally {
+      setLD(false);
+      setIsFilter(true);
+    }
   };
 
   const updateInfoState = (nextIndex) => {
@@ -120,18 +177,27 @@ function Accordion({ items }) {
             setTmsInfo([]);
             setDepth1("도로현황");
             setDepth2(null);
+            if (!(data.nroad && data.aadtDot)) {
+              fetchaadt();
+            }
             return [nextIndex];
           case "TMS":
             reset();
             setTaasInfo([]);
             setDepth1("TMS");
             setDepth2(null);
+            if (!(data.nroad && data.aadtDot)) {
+              fetchaadt();
+            }
             return [nextIndex];
           case "TAAS":
             reset();
             setTmsInfo([]);
             setDepth1("TAAS");
             setDepth2(null);
+            if (!data.emiroad) {
+              fetchemi();
+            }
             return [nextIndex];
           case "교통량구간":
             setTmsInfo([]);

@@ -5,7 +5,8 @@ import "mapbox-gl/dist/mapbox-gl.css"; //remove console log error
 import "./LandingPage.css";
 import dissolvedRoad from "../National_Road_Dissolved3.json";
 import intPoint from "../National_Road_Interchange_Final_geojson.json";
-import LeftBar from "../components/LeftBar";
+import LBacc from "../components/LBacc";
+import LBcurr from "../components/LBcurr";
 import useTooltip from "../hooks/use-tooltip";
 import useInfo from "../hooks/use-info";
 import useEmiColor from "../hooks/use_emicolor";
@@ -25,12 +26,20 @@ const INITIAL_VIEW_STATE = {
 };
 
 function LandingPage() {
-  const [LD, setLD] = useState(false);
   const [view, setView] = useState(INITIAL_VIEW_STATE);
-  const [data, setData] = useState({ nroad: null, emiroad: null });
   const [length, setLength] = useState(null);
   const { getTooltip } = useTooltip();
-  const { info, taasInfo, tmsInfo, depth1, depth2, isFilter } = useInfo();
+  const {
+    info,
+    taasInfo,
+    tmsInfo,
+    depth0,
+    depth1,
+    depth2,
+    isFilter,
+    LD,
+    data,
+  } = useInfo();
   const {
     getEmiVColor,
     getEmiPColor,
@@ -129,7 +138,7 @@ function LandingPage() {
       visible: isFilter && view.zoom >= 6 && depth1 === "TAAS",
       // onClick: (i, e) => console.log(i, e),
       updateTriggers: {
-        getLineColor: taasInfo,
+        getLineColor: [taasInfo, depth2],
       },
     });
   }, [
@@ -578,7 +587,7 @@ function LandingPage() {
   return (
     <div className="testc">
       <TopBar />
-      <LeftBar setData={setData} setLD={setLD} />
+      {depth0 === 0 ? <LBacc /> : <LBcurr />}
       <div className="container">
         <Basemap basemap={basemap} setBasemap={setBasemap} />
         <Controls

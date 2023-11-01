@@ -25,16 +25,20 @@ const TopBar = () => {
   ///////////////////////////////////////////////////////////////
   return (
     <div>
-      <div className="top_column">
-        <a href="./">
-          <div>KoRAP</div>
-        </a>
-        <div>사고위험지도</div>
-        <div>일반국도현황</div>
-        <div onClick={handleModOpen} className="guide">
-          <CgFileDocument style={{ color: "white", fontSize: "25px" }} />
+      <div className="topbar_ct">
+        <div className="top_column">
+          <a href="./">
+            <div>KoRAP</div>
+          </a>
+          <div>사고위험지도</div>
+          <div>일반국도현황</div>
         </div>
-        <div className="guide2">데이터 설명서</div>
+
+        <div onClick={handleModOpen} className="guide">
+          <div className="dscrp">데이터 설명서&nbsp;</div>
+          <CgFileDocument className="dscrp_ic" />
+        </div>
+        {/* <div className="guide2">데이터 설명서</div> */}
       </div>
       {showModal && modal}
     </div>
